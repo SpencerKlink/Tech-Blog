@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             event.preventDefault();
             const username = document.querySelector('#username').value.trim();
             const password = document.querySelector('#password').value.trim();
+            const errorElement = document.querySelector('#signup-error');
 
             if (username && password) {
                 const response = await fetch('/api/users/register', {
@@ -36,10 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                 });
 
+                const data = await response.json();
+
                 if (response.ok) {
                     document.location.replace('/');
                 } else {
-                    alert('Failed to sign up.');
+                    errorElement.textContent = data.message; 
                 }
             }
         });
@@ -72,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                document.location.replace('/dashboard');
+                document.location.replace('/dashboard'); 
             } else {
                 alert('Failed to delete post.');
             }
