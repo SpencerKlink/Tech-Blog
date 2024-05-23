@@ -1,10 +1,9 @@
 const express = require('express');
 const sessions = require('express-session');
-const exphbs = require('express-handlebars');
 const SequelizeStore = require('connect-session-sequelize')(sessions.Store);
+const exphbs = require('express-handlebars');
 
 const sequelize = require('./config/config');
-const routes = require('./controllers');
 const { homeRoutes, dashboardRoutes, apiRoutes } = require('./controllers');
 
 const app = express();
@@ -29,8 +28,6 @@ const sess = {
 };
 
 app.use(sessions(sess));
-
-app.use(routes);
 
 app.use('/', homeRoutes);
 app.use('/dashboard', dashboardRoutes);
