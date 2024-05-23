@@ -29,6 +29,11 @@ router.get('/', withAuth, async (req, res) => {
     }
 });
 
+router.get('/', (req, res) => {
+    res.send('Response from route');
+  });
+  
+
 router.get('/new', withAuth, (req, res) => {
     res.render('new-post', { loggedIn: true });
 });

@@ -5,6 +5,7 @@ const SequelizeStore = require('connect-session-sequelize')(sessions.Store);
 
 const sequelize = require('./config/config');
 const routes = require('./controllers');
+const { homeRoutes, dashboardRoutes, apiRoutes } = require('./controllers');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,10 @@ const sess = {
 app.use(sessions(sess));
 
 app.use(routes);
+
+app.use('/', homeRoutes);
+app.use('/dashboard', dashboardRoutes);
+app.use('/api', apiRoutes);
 
 sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
