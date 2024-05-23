@@ -14,10 +14,14 @@ router.post('/register', async (req, res) => {
             req.session.username = newUser.username;
             req.session.loggedIn = true;
 
-            res.redirect('/dashboard');  
+            res.json({ message: 'User registered successfully!' });
         });
     } catch (err) {
-        res.status(500).json(err);
+        if (err.name === 'SequelizeUniqueConstraintError') {
+            res.status(400).json({ message: 'Username already exists. Please choose another.' });
+        } else {
+            res.status(500).json(err);
+        }
     }
 });
 
@@ -53,10 +57,10 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.post('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
     if (req.session.loggedIn) {
         req.session.destroy(() => {
-            res.status(204).end();
+            res.redirect('/'); 
         });
     } else {
         res.status(404).end();
