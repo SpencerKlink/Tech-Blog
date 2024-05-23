@@ -81,4 +81,64 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    const commentForm = document.querySelector('#comment-form');
+    if (commentForm) {
+        commentForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const content = commentForm.querySelector('textarea[name="content"]').value.trim();
+            const postId = commentForm.querySelector('input[name="postId"]').value;
+
+            if (content) {
+                const response = await fetch('/api/comments', {
+                    method: 'POST',
+                    body: JSON.stringify({ content, postId }),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (response.ok) {
+                    const commentData = await response.json();
+                    addCommentToPage(commentData); 
+                    commentForm.reset(); 
+                } else {
+                    alert('Failed to add comment.');
+                }
+            }
+        });
+    }
+
+    function addCommentToPage(comment) {
+        const commentSection = document.createElement('div');
+        commentSection.classList.add('comment');
+        commentSection.innerHTML = `
+            <p>${comment.content}</p>
+            <p>— You just now</p>
+        `;
+        document.body.appendChild(commentSection); 
+    }
+    const editPostForm = document.querySelector('#edit-post-form');
+    if (editPostForm) {
+        editPostForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const title = editPostForm.querySelector('input[name="title"]').value.trim();
+            const content = editPostForm.querySelector('textarea[name="content"]').value.trim();
+            const postId = editPostForm.getAttribute('action').split('/').pop();
+
+            if (title && content) {
+                const response = await fetch(`/api/posts/${postId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ title, content }),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (response.ok) {
+                    document.location.replace('/dashboard'); 
+                } else {
+                    alert('Failed to update post.');
+                }
+            }
+        });
+    }
 });
+
+

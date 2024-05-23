@@ -29,10 +29,24 @@ router.get('/', withAuth, async (req, res) => {
     }
 });
 
-router.get('/', (req, res) => {
-    res.send('Response from route');
-  });
-  
+router.get('/edit/:id', withAuth, async (req, res) => {
+    try {
+        const postData = await Post.findByPk(req.params.id);
+
+        if (!postData) {
+            res.status(404).json({ message: 'No post found with this id!' });
+            return;
+        }
+
+        const post = postData.get({ plain: true });
+        res.render('edit-post', {
+            post,
+            loggedIn: req.session.loggedIn
+        });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
 
 router.get('/new', withAuth, (req, res) => {
     res.render('new-post', { loggedIn: true });
